@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interstellar Lab — Mentor Matching Report | Inovexus</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;line-height:1.6;color:#13202f;background:#e9eef2}
+.wrap{max-width:1440px;margin:0 auto;background:#fff;box-shadow:0 0 40px rgba(0,0,0,.12)}
+header{background:radial-gradient(ellipse at 85% 10%,#1f4a6e 0%,transparent 45%),linear-gradient(140deg,#060f1c 0%,#0b1d33 55%,#123150 100%);color:#fff;padding:3rem 2.5rem 2.4rem;position:relative;overflow:hidden}
+header:before{content:'';position:absolute;right:-90px;bottom:-140px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,#6fcf97 0%,#2d7a52 40%,transparent 70%);opacity:.22}
+header:after{content:'';position:absolute;inset:0;background-image:radial-gradient(1px 1px at 12% 22%,#fff 50%,transparent),radial-gradient(1px 1px at 38% 70%,#fff 50%,transparent),radial-gradient(1.5px 1.5px at 62% 18%,#fff 50%,transparent),radial-gradient(1px 1px at 78% 55%,#fff 50%,transparent),radial-gradient(1px 1px at 90% 30%,#fff 50%,transparent),radial-gradient(1px 1px at 24% 88%,#fff 50%,transparent);opacity:.5;pointer-events:none}
+.h-in{position:relative;z-index:1}
+.badge{display:inline-block;background:rgba(111,207,151,.15);border:1px solid rgba(111,207,151,.5);color:#8fe0b0;font-size:.75rem;font-weight:700;letter-spacing:2px;padding:4px 14px;border-radius:20px;margin-bottom:1rem;text-transform:uppercase}
+header h1{font-family:'Fraunces',serif;font-size:2.9rem;font-weight:400;letter-spacing:-.5px;margin-bottom:.3rem}
+header h1 em{color:#8fe0b0}
+.h-sub{font-size:1.05rem;opacity:.85;margin-bottom:1.4rem;max-width:1000px}
+.h-meta{display:flex;gap:2.2rem;font-size:.86rem;opacity:.75;border-top:1px solid rgba(255,255,255,.14);padding-top:1rem;flex-wrap:wrap}
+nav{position:sticky;top:0;z-index:100;background:#0b1d33;display:flex;overflow-x:auto;border-bottom:2px solid rgba(111,207,151,.35)}
+nav a{padding:.8rem 1.35rem;color:rgba(255,255,255,.75);text-decoration:none;font-size:.78rem;font-weight:600;letter-spacing:.6px;text-transform:uppercase;white-space:nowrap;border-right:1px solid rgba(255,255,255,.08)}
+nav a:hover{background:rgba(111,207,151,.12);color:#8fe0b0}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);background:linear-gradient(135deg,#0b1d33,#123150)}
+.kpi{display:flex;flex-direction:column;align-items:center;padding:1.8rem 1rem;color:#fff;background:transparent;border:none;border-right:1px solid rgba(255,255,255,.1);cursor:pointer;font-family:inherit;transition:background .2s}
+.kpi:last-child{border-right:none} .kpi:hover{background:rgba(111,207,151,.12)}
+.kpi-n{font-family:'Fraunces',serif;font-size:2.8rem;color:#8fe0b0;line-height:1}
+.kpi-l{font-size:.76rem;opacity:.85;margin-top:.35rem;text-transform:uppercase;letter-spacing:1.2px}
+.kpi-s{font-size:.7rem;opacity:.5;margin-top:.2rem}
+.conf{background:#0b1d33;color:#fff;padding:2rem 2.5rem;display:flex;gap:2rem;align-items:center;border-bottom:3px solid rgba(111,207,151,.35)}
+.conf h3{font-family:'Fraunces',serif;color:#8fe0b0;font-size:1.25rem;font-weight:400;margin-bottom:.5rem}
+.conf p{font-size:.88rem;opacity:.85;line-height:1.65;max-width:900px;margin-bottom:.5rem}
+.conf-box{text-align:center;background:rgba(111,207,151,.1);border:2px solid rgba(111,207,151,.4);border-radius:16px;padding:1.2rem 2rem;min-width:150px}
+.conf-n{font-family:'Fraunces',serif;font-size:3.4rem;color:#8fe0b0;line-height:1}
+.sec{padding:2.5rem} .alt{background:#f5f8fa}
+.s-tag{display:inline-block;background:#e3f3ea;color:#22603e;font-size:.68rem;font-weight:700;letter-spacing:1.5px;padding:3px 10px;border-radius:20px;text-transform:uppercase;margin-bottom:.6rem}
+.sec h2{font-family:'Fraunces',serif;font-size:1.8rem;font-weight:600;color:#0b1d33;margin-bottom:.3rem}
+.sec .lead{color:#4f5f70;font-size:.92rem;margin-bottom:1.6rem;max-width:1100px}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem}
+.pcard{background:#fff;border:1px solid #dbe4ea;border-top:3px solid #3f8f5f;border-radius:12px;padding:1.1rem 1.3rem}
+.pcard h4{font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:#6b7c8c;margin-bottom:.35rem}
+.pcard p{font-size:.88rem;font-weight:500;line-height:1.5}
+.pcard.wide{grid-column:span 3;border-top-color:#c0584a}
+.agrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem}
+.ar-card{background:#fff;border:1px solid #dbe4ea;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+.ar-head{display:flex;gap:1rem;padding:1.2rem 1.3rem .8rem}
+.ar-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.ar-es{background:#e2eef4} .ar-pa{background:#ece6f5} .ar-pd{background:#e3f3ea} .ar-fs{background:#f8efdc} .ar-is{background:#f8e4e1}
+.ar-title{font-weight:700;font-size:.95rem;color:#0b1d33} .ar-obj{font-size:.82rem;color:#4f5f70;line-height:1.5}
+.ar-rat{padding:0 1.3rem .6rem;font-size:.81rem;color:#4f5f70;font-style:italic;line-height:1.6;flex-grow:1}
+.ar-src{padding:0 1.3rem .9rem;font-size:.72rem;color:#7d8c99}
+.ar-kpi{background:#f1f6f3;border-top:1px solid #dbe4ea;padding:.9rem 1.3rem;display:flex;gap:.5rem;align-items:center}
+.k-lab{font-size:.68rem;text-transform:uppercase;letter-spacing:1px;color:#6b7c8c;font-weight:700} .k-val{font-weight:700;color:#0b1d33;font-size:.88rem}
+.filters{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.3rem}
+.fbtn{border:1px solid #c9d5de;background:#fff;border-radius:20px;padding:5px 14px;font-size:.78rem;font-weight:600;color:#33475b;cursor:pointer;font-family:inherit}
+.fbtn.on{background:#0b1d33;color:#fff;border-color:#0b1d33}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.15rem}
+.m-card{background:#fff;border:1px solid #dbe4ea;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s}
+.m-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.09)}
+.m-top{padding:1.1rem 1.2rem 0} .m-head{display:flex;gap:.8rem;margin-bottom:.7rem}
+.av{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:600;font-size:1.05rem;flex-shrink:0}
+.av-es{background:#e2eef4;color:#2f6f8f} .av-pa{background:#ece6f5;color:#5b3f86} .av-pd{background:#e3f3ea;color:#22603e} .av-fs{background:#f8efdc;color:#8a6118} .av-is{background:#f8e4e1;color:#9b3a2e}
+.m-name{font-weight:700;font-size:.95rem;color:#0b1d33;line-height:1.25} .m-loc{font-size:.77rem;color:#6b7c8c}
+.m-scores{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin-bottom:.5rem}
+.pill{padding:3px 10px;border-radius:20px;font-size:.76rem;font-weight:700} .p-dmf{background:#0b1d33;color:#8fe0b0} .p-conf{background:#e3f3ea;color:#22603e}
+.status-flag{font-size:.68rem;font-weight:700;color:#9b3a2e;background:#fbecea;padding:2px 8px;border-radius:10px}
+.confbar{height:4px;background:#edf1f4;border-radius:3px;margin-bottom:.6rem;overflow:hidden} .confbar span{display:block;height:100%;background:linear-gradient(90deg,#3f8f5f,#8fe0b0)}
+.a-badge{display:inline-block;font-size:.67rem;font-weight:700;padding:2px 9px;border-radius:8px;letter-spacing:.4px}
+.a-es{background:#e2eef4;color:#2f6f8f} .a-pa{background:#ece6f5;color:#5b3f86} .a-pd{background:#e3f3ea;color:#22603e} .a-fs{background:#f8efdc;color:#8a6118} .a-is{background:#f8e4e1;color:#9b3a2e}
+.m-rat{font-size:.81rem;color:#4f5f70;line-height:1.55;padding:.8rem 1.2rem;border-top:1px solid #f0f3f5;margin-top:.7rem;flex-grow:1}
+.m-tags{display:flex;flex-wrap:wrap;gap:.3rem;padding:.7rem 1.2rem;border-top:1px solid #f0f3f5}
+.tag{font-size:.66rem;padding:2px 8px;border-radius:12px;font-weight:500} .t-sec{background:#e2eef4;color:#2f6f8f} .t-sk{background:#ece6f5;color:#5b3f86} .t-geo{background:#e3f3ea;color:#22603e}
+.m-li{display:block;text-align:center;padding:.6rem;background:#f5f8fa;color:#33475b;text-decoration:none;font-size:.77rem;border-top:1px solid #dbe4ea} .m-li:hover{background:#e3f3ea} .m-li.off{opacity:.5}
+.ggrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.gcard{background:#fff;border:1px dashed #9fb3c2;border-radius:12px;padding:1rem 1.2rem} .gcard b{color:#0b1d33} .gcard p{font-size:.8rem;color:#4f5f70;margin:.35rem 0}
+.note{background:#fff8e8;border:1px solid #efd9a6;border-radius:12px;padding:1.1rem 1.3rem;font-size:.86rem;color:#5b4a1f;line-height:1.65}
+.cgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.4rem}
+.ccard{background:#fff;border:1px solid #dbe4ea;border-radius:16px;padding:1.3rem} .full{grid-column:1/-1}
+.ccard h3{font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#0b1d33;margin-bottom:.2rem} .ccard p{font-size:.77rem;color:#7d8c99;margin-bottom:.9rem}
+.cw{position:relative;height:270px} .cw-t{position:relative;height:400px}
+.meth{font-size:.84rem;color:#4f5f70;line-height:1.7} .meth li{margin:0 0 .4rem 1.2rem}
+footer{background:#060f1c;color:rgba(255,255,255,.55);text-align:center;padding:1.5rem;font-size:.77rem}
+@media(max-width:1000px){.mgrid,.pgrid,.agrid,.ggrid{grid-template-columns:1fr 1fr} .pcard.wide{grid-column:span 2} .cgrid{grid-template-columns:1fr}}
+@media(max-width:640px){.mgrid,.pgrid,.agrid,.ggrid,.kpis{grid-template-columns:1fr} .pcard.wide{grid-column:span 1} .conf{flex-direction:column} header h1{font-size:2.1rem} .sec,.conf,header{padding-left:16px;padding-right:16px}}
+</style></head><body><div class="wrap">
+<header><div class="h-in">
+<div class="badge">🌱 Inovexus · Mentor Matching Report</div>
+<h1>Interstellar Lab — <em>Mentor Match</em></h1>
+<div class="h-sub">AI-controlled BioPod greenhouses for rare botanicals on Earth and plant payloads in space · Series Seed-3 extension · France (Ivry) → US</div>
+<div class="h-meta"><span>📅 13 October 2026</span><span>🗄️ 535 mentors scored (537 in database, staff excluded)</span><span>🎯 Seed-3: $45M pre / $81.4M post · ~$2.9M open to 30 Nov</span><span>🌍 Delaware C-Corp · French opco · NASA KSC lab · NYC office</span><span>⚙️ Notes-first dual-layer scoring</span></div>
+</div></header>
+<nav><a href="#kpis">KPIs</a><a href="#profile">Startup Profile</a><a href="#areas">Mentoring Areas</a><a href="#top">Top Mentors</a><a href="#qualified">Qualified Mentors</a><a href="#granola">Granola-only</a><a href="#perks">Perks</a><a href="#dashboard">Dashboard</a><a href="#method">Method</a></nav>
+<div class="kpis" id="kpis">
+<button class="kpi" onclick="go('top')"><span class="kpi-n">14</span><span class="kpi-l">Top Mentors</span><span class="kpi-s">DMF ≥ 8.5 / 10</span></button>
+<button class="kpi" onclick="go('qualified')"><span class="kpi-n">57</span><span class="kpi-l">Qualified Mentors</span><span class="kpi-s">DMF 7.0 – 8.4 / 10</span></button>
+<button class="kpi" onclick="go('dashboard')"><span class="kpi-n">13.3%</span><span class="kpi-l">Match Rate</span><span class="kpi-s">71 / 535 profiles</span></button>
+<button class="kpi" onclick="go('confidence')"><span class="kpi-n">78</span><span class="kpi-l">Global Confidence</span><span class="kpi-s">Score / 100</span></button>
+</div>
+<div class="conf" id="confidence"><div>
+<h3>Global Confidence Score — 78 / 100</h3>
+<p><strong>Strong where the money is today.</strong> The community holds real buyer-side depth in fragrance, cosmetics and ingredients: a former Firmenich division president, the head of L'Oréal's Swiss innovation hub (who sold a deeptech company to L'Oréal), a current L'Oréal strategy director, a flavour-ingredient founder exited to Kerry, and a natural-astaxanthin bioreactor founder. Finance is also well covered for the CFO gap and the Series A, including an ex-Cellectis CFO who raised for plant-biotech Calyxt and took the company onto NASDAQ, plus several hardware-scale-up CFOs.</p>
+<p><strong>Where it is thinner.</strong> Space is covered by strategy, investor and board profiles (CNES/Aerospacelab, BCG A&D/Neo Space, Beyond Earth Ventures, SpaceR), but no one has sold payloads to NASA or a commercial station. Nobody in the Affinity base has operated a greenhouse or vertical farm; the closest are plant breeding (Enza Zaden) and Granola-only food-engineering leads. Several strong profiles are on hold or not yet onboarded.</p>
+<p style="opacity:.6;font-size:.8rem">How to read it: 85+ = every bottleneck has multiple sector-native operators; 75–84 = all bottlenecks covered, at least one by adjacent rather than native experience; below 70 = recruiting outside the community will be needed.</p>
+</div><div class="conf-box"><div class="conf-n">78</div><div style="opacity:.6">/ 100</div><div style="font-size:.75rem;color:#8fe0b0;margin-top:4px">7.8 / 10 normalized</div></div></div>
+
+<section class="sec" id="profile"><span class="s-tag">Startup Profile</span><h2>Interstellar Lab — Company Overview</h2>
+<p class="lead">Extracted from the intro call between Barbara Belvisi and Philippe Roche (Sep 28, 2026), the Investment Brief (Seed-3 extension) and interstellarlab.com. Deck figures are company claims; cost per kg and contract values are still pending from the founder.</p>
+<div class="pgrid"><div class="pcard"><h4>Sector &amp; Sub-sector</h4><p>Controlled-environment agriculture / AgTech hardware + SpaceTech: AI-controlled closed-loop greenhouses (BioPods) for rare botanicals on Earth and plant-growth payloads in orbit and on the Moon</p></div><div class="pcard"><h4>Stage &amp; Round</h4><p>Late seed / Series Seed-3 extension (Preferred, 1x) at $45M pre / $81.4M post; ~$2.9M open until 30 Nov 2026; $14.3M + €450K raised to date; $30–40M Series A targeted for 2027</p></div><div class="pcard"><h4>Business Model</h4><p>Hardware + recurring service: SIRIUS research pod ($150K + $50K/yr), ORION production pod ($500K + $150K/yr); per-mission space payloads (EDEN from $500K; BLOOM lunar, mission-based); grant/prize funding (NUCLEUS)</p></div><div class="pcard"><h4>Geographic Focus</h4><p>Delaware C-Corp with French opco (Ivry-sur-Seine design &amp; manufacturing); NASA Kennedy Space Center lab; small NYC office opening; Grasse production sites</p></div><div class="pcard"><h4>Problem &amp; Value Proposition</h4><p>Fragile, climate-exposed botanical supply chains for cosmetics, fragrance and nutraceutical groups; BioPods claim x14–x54 yields per m², up to 99% less water, no pesticides, traceable local production</p></div><div class="pcard"><h4>Product &amp; Technology</h4><p>Closed-loop climate, water and nutrient control with CO2 capture; plant-recipe database, AI models, swarm optimisation across the pod fleet, computer vision; modular Earth-to-orbit hardware</p></div><div class="pcard"><h4>Target Customer</h4><p>Earth: L&#x27;Oréal (Lancôme), Robertet, DSM-Firmenich, then New Jersey fragrance houses and nutraceutical players. Space: NASA, Vast (Haven-1), Astrolab (FLEX rover), Axiom, Starlab/Voyager</p></div><div class="pcard"><h4>Traction</h4><p>FY2025 French-entity revenue €1.55M (+76%), ~€1M at the US entity per founder; ~€2.0M burn; $2M &#x27;already sold&#x27; for 2026; NASA Deep Space Food Challenge Phase 3 US winner</p></div><div class="pcard"><h4>Team</h4><p>Barbara Belvisi (solo founder &amp; CEO, ex-hardware VC: Hardware Club/HCVC, Hello Tomorrow, TheFamily); Jim Rhoné (CPO, ex-Soliquid); ~25–28 staff; board: Bruno Maisonnier, Anousheh Ansari, Greg Autry</p></div><div class="pcard wide"><h4>Explicit Bottlenecks</h4><p>(1) Production delays and pilot-to-park scale-up; (2) unproven cost per kg vs field/biotech; (3) concentration on 1–2 lumpy contracts; (4) no CFO / C-level software lead; (5) space revenue tied to partner timelines; (6) US terrestrial GTM not started</p></div></div></section>
+
+<section class="sec alt" id="areas"><span class="s-tag">Mentoring Framework</span><h2>5 Mentoring Areas &amp; KPIs</h2>
+<p class="lead">The founder call takes priority over the memo, which takes priority over the website. Five areas (the maximum) because the memo's own mentoring programme lists five distinct gaps and Barbara confirmed production and US gaps on the call. KPIs are indicators to track only, with no targets.</p>
+<div class="agrid"><div class="ar-card"><div class="ar-head"><div class="ar-icon ar-es">🧪</div>
+<div><div class="ar-title">Area 1 — Enterprise Sales</div><div class="ar-obj">Win the next fragrance, cosmetics and nutraceutical groups beyond L&#x27;Oréal and Robertet, and run long research-to-production cycles (~4 years at L&#x27;Oréal) as a repeatable account process.</div></div></div>
+<p class="ar-rat">Barbara names L&#x27;Oréal, Robertet and DSM-Firmenich as the business today and targets New Jersey fragrance houses next. The memo&#x27;s first mentoring objective is &#x27;introductions to fragrance, cosmetics and nutraceutical groups beyond the current anchors&#x27;, and its key risk is that one or two contracts drive each year.</p><div class="ar-src">Source: Call transcript (Sep 28) · Memo §7, §10 · 16 matched mentors (4 top)</div>
+<div class="ar-kpi"><span class="k-lab">KPI →</span><span class="k-val"># enterprise meetings</span></div></div><div class="ar-card"><div class="ar-head"><div class="ar-icon ar-pa">🛰️</div>
+<div><div class="ar-title">Area 2 — Partnerships</div><div class="ar-obj">Prioritise space missions and partners with the most reliable timelines, and open strategic partnerships with agri/ingredient majors.</div></div></div>
+<p class="ar-rat">Space revenue depends on third-party launch and lander timelines (Vast 2027, Astrolab 2028), which the memo lists as a concern and a mentoring area. On the call, Philippe suggested John Deere and Cargill, and Barbara said &#x27;à fond&#x27; — talk to them before the Series A.</p><div class="ar-src">Source: Call transcript · Memo §9, §10 · 16 matched mentors (5 top)</div>
+<div class="ar-kpi"><span class="k-lab">KPI →</span><span class="k-val"># partnerships</span></div></div><div class="ar-card"><div class="ar-head"><div class="ar-icon ar-pd">🌱</div>
+<div><div class="ar-title">Area 3 — Product Development</div><div class="ar-obj">Move BioPods from pilot units to the 2028 multi-pod production park, and document production cost per kg versus field and biotech sourcing.</div></div></div>
+<p class="ar-rat">Barbara admits production is behind schedule (&#x27;on a du retard en prod&#x27;), and the new Grasse systems slipped to early next year. The memo flags cost per kg as not yet demonstrated, and pilot-to-park as the main hardware scale-up risk.</p><div class="ar-src">Source: Call transcript · Memo §3, §9 (Hardware scale-up) · 13 matched mentors (2 top)</div>
+<div class="ar-kpi"><span class="k-lab">KPI →</span><span class="k-val">% roadmap delivered</span></div></div><div class="ar-card"><div class="ar-head"><div class="ar-icon ar-fs">📊</div>
+<div><div class="ar-title">Area 4 — Finance Structuration</div><div class="ar-obj">Hire a CFO, structure investor reporting and the capital stack (equity, non-dilutive, notes) ahead of a $30–40M Series A.</div></div></div>
+<p class="ar-rat">Barbara is preparing a $30–40M Series A for next year. The memo flags a first-time operator CEO with no CFO, ~€2.0M annual burn, capitalised R&amp;D and outstanding convertible notes, and lists &#x27;support for a CFO hire and investor reporting&#x27; as a mentoring objective.</p><div class="ar-src">Source: Call transcript · Memo §1, §7, §8, §10 · 18 matched mentors (3 top)</div>
+<div class="ar-kpi"><span class="k-lab">KPI →</span><span class="k-val">Cash runway</span></div></div><div class="ar-card"><div class="ar-head"><div class="ar-icon ar-is">🇺🇸</div>
+<div><div class="ar-title">Area 5 — International Scaling</div><div class="ar-obj">Launch the terrestrial business in the US (New York office, New Jersey fragrance cluster, nutraceutical / Whole Foods / Amazon leads).</div></div></div>
+<p class="ar-rat">Barbara says the US terrestrial business has not started: a small NYC office is opening, and existing French clients also operate in New Jersey. The memo notes North America is ~42% of the botanicals market and lists US expansion as a mentoring area.</p><div class="ar-src">Source: Call transcript · Memo §10 · 8 matched mentors (0 top)</div>
+<div class="ar-kpi"><span class="k-lab">KPI →</span><span class="k-val">% revenue abroad</span></div></div></div></section>
+
+<section class="sec" id="top"><span class="s-tag">Top Mentors · DMF ≥ 8.5</span><h2>14 Top Mentors</h2>
+<p class="lead">Highest evidence-backed fit with Interstellar's bottlenecks, scored from the Affinity notes first and the CSV and enriched profiles second. ⚠ flags mark mentors whose community status needs confirming before an intro.</p>
+<div class="filters" data-grid="g-top"></div>
+<div class="mgrid" id="g-top"><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-es">LM</div>
+      <div><div class="m-name">Laurent Manca</div><div class="m-loc">🇨🇭 Biel/Bienne, Switzerland</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 9.5</span><span class="pill p-conf">Conf. 9.0</span></div>
+    <div class="confbar"><span style="width:90%"></span></div>
+    <span class="a-badge a-es">Enterprise Sales</span>
+  </div>
+  <p class="m-rat">Took Gjosa (water-efficiency deeptech) through its acquisition by L&#x27;Oréal and now runs L&#x27;Oréal&#x27;s Swiss Innovation Hub, with notes confirming direct access to L&#x27;Oréal&#x27;s investment and M&amp;A teams. The shortest route to turning the Grasse pilot into a production park and repeating the playbook with other groups; also advised Swiss Space Systems.</p>
+  <div class="m-tags"><span class="tag t-sec">Cosmetics &amp; Beauty</span><span class="tag t-sec">Deeptech</span><span class="tag t-sec">Space</span><span class="tag t-sk">Corporate Partnerships</span><span class="tag t-sk">M&amp;A</span><span class="tag t-sk">Commercialisation</span><span class="tag t-geo">Switzerland</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/laurentmanca/" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pa">CV</div>
+      <div><div class="m-name">Christophe Verbaere</div><div class="m-loc">🇨🇭 Geneva, Switzerland</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 9.4</span><span class="pill p-conf">Conf. 9.0</span></div>
+    <div class="confbar"><span style="width:90%"></span></div>
+    <span class="a-badge a-pa">Partnerships</span>
+  </div>
+  <p class="m-rat">Former CNES launch-trajectory engineer, board member at Aerospacelab and advisor to MaiaSpace, with five years mentoring space startups, including Inovexus portfolio company Incosmic. Well placed to rank Vast, Astrolab and the station operators by timeline reliability, as the memo asks.</p>
+  <div class="m-tags"><span class="tag t-sec">SpaceTech</span><span class="tag t-sec">Aerospace</span><span class="tag t-sk">Space Partnerships</span><span class="tag t-sk">Board Governance</span><span class="tag t-sk">Lead Mentoring</span><span class="tag t-geo">Switzerland</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/christophe-verbaere/" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-es">AV</div>
+      <div><div class="m-name">Armand de Villoutreys</div><div class="m-loc">🇫🇷 Paris, France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 9.2</span><span class="pill p-conf">Conf. 8.0</span><span class="status-flag">⚠ On hold</span></div>
+    <div class="confbar"><span style="width:80%"></span></div>
+    <span class="a-badge a-es">Enterprise Sales</span>
+  </div>
+  <p class="m-rat">Former President and Executive Board member of a ~€3B Firmenich division, with board seats in agritech and cosmetics/nutraceuticals. He can answer the memo&#x27;s core buyer question first-hand: would a fragrance house pay a premium for pod-grown botanicals? Status is on hold, so confirm availability.</p>
+  <div class="m-tags"><span class="tag t-sec">Fragrance &amp; Flavours</span><span class="tag t-sec">Ingredients</span><span class="tag t-sec">Agritech</span><span class="tag t-sk">Key Account Sales</span><span class="tag t-sk">Corporate Strategy</span><span class="tag t-sk">International BD</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://linkedin.com/in/armand-de-villoutreys-434183118" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-fs">ED</div>
+      <div><div class="m-name">Eric Dutang</div><div class="m-loc">🇺🇸 New York, United States</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 9.1</span><span class="pill p-conf">Conf. 8.5</span></div>
+    <div class="confbar"><span style="width:85%"></span></div>
+    <span class="a-badge a-fs">Finance Structuration</span>
+  </div>
+  <p class="m-rat">Ex-CFO of Cellectis who led its NASDAQ listing and enabled a $110M raise at its plant-biotech subsidiary Calyxt. New York-based and advising French companies launching in the US, which fits the missing CFO, investor reporting and the $30M Series A.</p>
+  <div class="m-tags"><span class="tag t-sec">BioTech</span><span class="tag t-sec">Ag-biotech</span><span class="tag t-sec">Finance</span><span class="tag t-sk">CFO</span><span class="tag t-sk">IPO &amp; Capital Raising</span><span class="tag t-sk">US Expansion</span><span class="tag t-geo">United States</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/eric-dutang-a484b41b/" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pa">AF</div>
+      <div><div class="m-name">Aurelien Fougerard</div><div class="m-loc">🇫🇷 Paris, France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 9.0</span><span class="pill p-conf">Conf. 8.5</span></div>
+    <div class="confbar"><span style="width:85%"></span></div>
+    <span class="a-badge a-pa">Partnerships</span>
+  </div>
+  <p class="m-rat">Former BCG Partner covering the full aerospace &amp; defense value chain, now Chief Strategy Officer at Neo Space Group (Saudi Arabia&#x27;s national space champion). He brings both sides of the table for prioritising missions and partners.</p>
+  <div class="m-tags"><span class="tag t-sec">Aerospace &amp; Defense</span><span class="tag t-sec">SpaceTech</span><span class="tag t-sk">Strategy</span><span class="tag t-sk">M&amp;A / Due Diligence</span><span class="tag t-sk">Industrial Operations</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/fougerard" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pd">JC</div>
+      <div><div class="m-name">Jonas De Cooman</div><div class="m-loc">🇧🇪 Belgium</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 9.0</span><span class="pill p-conf">Conf. 8.0</span></div>
+    <div class="confbar"><span style="width:80%"></span></div>
+    <span class="a-badge a-pd">Product Development</span>
+  </div>
+  <p class="m-rat">Exited software founder now running Axabio, which produces natural astaxanthin in its own patented photobioreactors. It is the closest analogue in the database to growing a high-value natural ingredient in a closed system, and directly relevant to the open cost-per-kg question.</p>
+  <div class="m-tags"><span class="tag t-sec">BioTech</span><span class="tag t-sec">Natural Ingredients</span><span class="tag t-sec">Cosmetics &amp; Nutraceuticals</span><span class="tag t-sk">Bio-production Scale-up</span><span class="tag t-sk">GTM</span><span class="tag t-sk">Fundraising</span><span class="tag t-geo">Belgium</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/jonasdecooman" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pd">GP</div>
+      <div><div class="m-name">Guillaume Pollin</div><div class="m-loc">🇫🇷 France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 8.9</span><span class="pill p-conf">Conf. 8.5</span></div>
+    <div class="confbar"><span style="width:85%"></span></div>
+    <span class="a-badge a-pd">Product Development</span>
+  </div>
+  <p class="m-rat">Serial hardware founder (Delta Drone, Motion Recall) who ran the StartAndFab industrial accelerator. His notes centre on manufacturing, launch and supply-chain risk, which are the production delays Barbara named and the 2028 production-park step.</p>
+  <div class="m-tags"><span class="tag t-sec">Hardware</span><span class="tag t-sec">Manufacturing</span><span class="tag t-sec">Deeptech</span><span class="tag t-sk">Industrialisation / DFM</span><span class="tag t-sk">Supply Chain</span><span class="tag t-sk">Risk Management</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/guillaume-pollin-4ab0792/" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pa">DS</div>
+      <div><div class="m-name">Detlef Schoen</div><div class="m-loc">🇬🇧 London, United Kingdom</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 8.9</span><span class="pill p-conf">Conf. 7.5</span></div>
+    <div class="confbar"><span style="width:75%"></span></div>
+    <span class="a-badge a-pa">Partnerships</span>
+  </div>
+  <p class="m-rat">Career from Cargill to CEO of NewAg Partners, with farming operations and large acquisitions behind him. This maps directly to the Cargill / John Deere strategic-partner route Philippe raised with Barbara ahead of the Series A.</p>
+  <div class="m-tags"><span class="tag t-sec">Agribusiness</span><span class="tag t-sec">Commodities</span><span class="tag t-sec">Agritech</span><span class="tag t-sk">Large Acquisitions</span><span class="tag t-sk">Corporate Partnerships</span><span class="tag t-sk">General Management</span><span class="tag t-geo">United Kingdom</span></div>
+  <a class="m-li" href="https://linkedin.com/in/detlef-schoen" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-fs">MU</div>
+      <div><div class="m-name">Maxime Ubeda</div><div class="m-loc">🇫🇷 Paris, France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 8.7</span><span class="pill p-conf">Conf. 8.5</span></div>
+    <div class="confbar"><span style="width:85%"></span></div>
+    <span class="a-badge a-fs">Finance Structuration</span>
+  </div>
+  <p class="m-rat">CFO of Sorare from Seed through Series A and the $600M Series B, now a fractional CFO for ~15 startups, and audited L&#x27;Oréal at Deloitte. A practical fit to design the finance function and CFO hire before the Series A.</p>
+  <div class="m-tags"><span class="tag t-sec">Tech</span><span class="tag t-sec">FoodTech</span><span class="tag t-sec">Finance</span><span class="tag t-sk">CFO / Finance Function</span><span class="tag t-sk">Fundraising</span><span class="tag t-sk">Non-dilutive Funding</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/maxime-ubeda-a934628b/" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pa">OD</div>
+      <div><div class="m-name">Oleg Demidov</div><div class="m-loc">🇺🇸 San Francisco Bay Area, United States</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 8.7</span><span class="pill p-conf">Conf. 7.5</span><span class="status-flag">⚠ Invitation to mentor sent</span></div>
+    <div class="confbar"><span style="width:75%"></span></div>
+    <span class="a-badge a-pa">Partnerships</span>
+  </div>
+  <p class="m-rat">Founder of CarbonSpaceTech (satellite carbon monitoring) and partner at Beyond Earth Ventures (space) and Cosolv (climate). He sits exactly at Interstellar&#x27;s space × climate intersection and brings a US investor network for the Series A. Status: invitation sent.</p>
+  <div class="m-tags"><span class="tag t-sec">SpaceTech</span><span class="tag t-sec">ClimateTech</span><span class="tag t-sec">Deeptech VC</span><span class="tag t-sk">Space Investing</span><span class="tag t-sk">Corporate Partnerships</span><span class="tag t-sk">US Network</span><span class="tag t-geo">United States</span></div>
+  <a class="m-li" href="https://linkedin.com/in/dr-oleg-demidov-02193414" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-es">RD</div>
+      <div><div class="m-name">Reindert Dekker</div><div class="m-loc">🇳🇱 Netherlands</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 8.6</span><span class="pill p-conf">Conf. 8.0</span></div>
+    <div class="confbar"><span style="width:80%"></span></div>
+    <span class="a-badge a-es">Enterprise Sales</span>
+  </div>
+  <p class="m-rat">Two decades of commercial leadership in ingredient and nutraceutical companies (Nutridiant). His notes list biotech applied to nutraceuticals and skin, plus agritech, which opens the nutraceutical buyer segment named in both the call and the memo.</p>
+  <div class="m-tags"><span class="tag t-sec">Ingredients</span><span class="tag t-sec">Nutraceuticals</span><span class="tag t-sec">Agritech</span><span class="tag t-sk">Market Penetration</span><span class="tag t-sk">Distribution</span><span class="tag t-sk">Supply Chain (Food)</span><span class="tag t-geo">Netherlands</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/reindert-dekker/" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pa">MM</div>
+      <div><div class="m-name">Miguel Olivares-Mendez</div><div class="m-loc">🇱🇺 Luxembourg</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 8.5</span><span class="pill p-conf">Conf. 8.5</span></div>
+    <div class="confbar"><span style="width:85%"></span></div>
+    <span class="a-badge a-pa">Partnerships</span>
+  </div>
+  <p class="m-rat">Heads the SpaceR space-robotics group at the University of Luxembourg and directs its Space Technologies &amp; Business master&#x27;s. His notes stress helping lunar-focused founders monetise near-term applications, which is Interstellar&#x27;s Earth/space balance.</p>
+  <div class="m-tags"><span class="tag t-sec">SpaceTech</span><span class="tag t-sec">Space Robotics</span><span class="tag t-sec">Lunar</span><span class="tag t-sk">Lunar &amp; Orbital Economy</span><span class="tag t-sk">Grant Funding</span><span class="tag t-sk">IP Valorisation</span><span class="tag t-geo">Luxembourg</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/miguel-olivares-mendez-8a952533?utm_source=share_via&amp;utm_content=profile&amp;utm_medium=member_ios" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-es">AM</div>
+      <div><div class="m-name">Anne Mérienne</div><div class="m-loc">🇫🇷 Paris, France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 8.5</span><span class="pill p-conf">Conf. 8.0</span></div>
+    <div class="confbar"><span style="width:80%"></span></div>
+    <span class="a-badge a-es">Enterprise Sales</span>
+  </div>
+  <p class="m-rat">Founded Africa Flavour House, a flavour-ingredient manufacturer, and exited it to Kerry Group. She knows first-hand how ingredient majors qualify, contract and integrate a new supply source.</p>
+  <div class="m-tags"><span class="tag t-sec">Flavour Ingredients</span><span class="tag t-sec">FMCG</span><span class="tag t-sec">M&amp;A</span><span class="tag t-sk">Ingredient Manufacturing</span><span class="tag t-sk">Exit / Integration</span><span class="tag t-sk">BD</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/anne-m%C3%A9rienne-3458327/" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-fs">HO</div>
+      <div><div class="m-name">Heike O&#x27;Donnell</div><div class="m-loc">🇫🇷 Paris, France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 8.5</span><span class="pill p-conf">Conf. 7.5</span></div>
+    <div class="confbar"><span style="width:75%"></span></div>
+    <span class="a-badge a-fs">Finance Structuration</span>
+  </div>
+  <p class="m-rat">Group CFO at instagrid (hardware-as-a-service cleantech) and CFO of Payworks through its acquisition by Visa. Relevant to lumpy hardware revenue plus a recurring service layer, and to building the CFO organisation.</p>
+  <div class="m-tags"><span class="tag t-sec">CleanTech Hardware</span><span class="tag t-sec">Fintech</span><span class="tag t-sk">CFO</span><span class="tag t-sk">Finance/HR/Legal Build-out</span><span class="tag t-sk">Exit Preparation</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://linkedin.com/in/heikeodonnell" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article></div></section>
+
+<section class="sec alt" id="qualified"><span class="s-tag">Qualified Mentors · DMF 7.0 – 8.4</span><h2>57 Qualified Mentors</h2>
+<p class="lead">A strong secondary bench across all five areas, deliberately skewed toward space, ingredients, industrialisation and US operators rather than generic SaaS sales profiles.</p>
+<div class="filters" data-grid="g-qual"></div>
+<div class="mgrid" id="g-qual"><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-fs">RM</div>
+      <div><div class="m-name">Rudine Mottaghian</div><div class="m-loc">🇫🇷 Paris, France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 8.4</span><span class="pill p-conf">Conf. 8.0</span></div>
+    <div class="confbar"><span style="width:80%"></span></div>
+    <span class="a-badge a-fs">Finance Structuration</span>
+  </div>
+  <p class="m-rat">Co-founder and CBO of Wespran (CO2-to-methanol biotech), where she secured Bpifrance debt and a CNRS partnership; ex-Morgan Stanley and J.P. Morgan M&amp;A. Covers deeptech capital stacking for a French opco with a US topco.</p>
+  <div class="m-tags"><span class="tag t-sec">Deeptech BioTech</span><span class="tag t-sec">Luxury</span><span class="tag t-sec">Finance</span><span class="tag t-sk">M&amp;A</span><span class="tag t-sk">Bpifrance Debt</span><span class="tag t-sk">Investor Relations</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/rudine" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-is">OA</div>
+      <div><div class="m-name">Olivier Attia</div><div class="m-loc">🇺🇸 New York, United States</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 8.3</span><span class="pill p-conf">Conf. 7.5</span></div>
+    <div class="confbar"><span style="width:75%"></span></div>
+    <span class="a-badge a-is">International Scaling</span>
+  </div>
+  <p class="m-rat">New York-based serial founder whose firm has helped French and European B2B and biotech companies enter and raise in the US since 2013. Directly useful for the New York office and the New Jersey fragrance cluster.</p>
+  <div class="m-tags"><span class="tag t-sec">B2B</span><span class="tag t-sec">BioTech</span><span class="tag t-sec">Cyber</span><span class="tag t-sk">US Market Entry</span><span class="tag t-sk">US Fundraising</span><span class="tag t-sk">Lead Generation</span><span class="tag t-geo">United States</span></div>
+  <a class="m-li" href="https://linkedin.com/in/olivierattia" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pd">MU</div>
+      <div><div class="m-name">Marc Uleman</div><div class="m-loc">🇳🇱 The Hague, Netherlands</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 8.3</span><span class="pill p-conf">Conf. 7.5</span></div>
+    <div class="confbar"><span style="width:75%"></span></div>
+    <span class="a-badge a-pd">Product Development</span>
+  </div>
+  <p class="m-rat">Ran a $1.2–1.4B high-tech manufacturing platform (IDEX, Prodrive) with 30–45 sites and earlier worked at DSM. He has a decade of CEO coaching to support scaling from pilot pods to a multi-pod production site.</p>
+  <div class="m-tags"><span class="tag t-sec">High-tech Manufacturing</span><span class="tag t-sec">Specialty Materials</span><span class="tag t-sk">Multi-site Operations</span><span class="tag t-sk">Turnaround</span><span class="tag t-sk">B2B GTM</span><span class="tag t-geo">Netherlands</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/marc-uleman-5231a39/" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-is">HT</div>
+      <div><div class="m-name">Hélène Thibieroz</div><div class="m-loc">🇺🇸 San Francisco Bay Area, United States</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 8.3</span><span class="pill p-conf">Conf. 7.0</span></div>
+    <div class="confbar"><span style="width:70%"></span></div>
+    <span class="a-badge a-is">International Scaling</span>
+  </div>
+  <p class="m-rat">Bay Area-based; former Cadence/Synopsys technical marketer, now a HAX and Cleantech Open mentor. Notes show her building an EU-to-California pipeline and a €50M agro fund (Agrilab Studio), a fit for a US Earth go-to-market.</p>
+  <div class="m-tags"><span class="tag t-sec">CleanTech</span><span class="tag t-sec">Hardware</span><span class="tag t-sec">Agri</span><span class="tag t-sk">Hardware GTM</span><span class="tag t-sk">Partnerships</span><span class="tag t-sk">US Market</span><span class="tag t-geo">United States</span></div>
+  <a class="m-li" href="https://linkedin.com/in/heleneofoz" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-es">LL</div>
+      <div><div class="m-name">Laurent Lautier</div><div class="m-loc">🇫🇷 France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 8.2</span><span class="pill p-conf">Conf. 7.5</span></div>
+    <div class="confbar"><span style="width:75%"></span></div>
+    <span class="a-badge a-es">Enterprise Sales</span>
+  </div>
+  <p class="m-rat">Three decades at L&#x27;Oréal, P&amp;G and Clarins (grew Clarins Asia past $500M), now a consultant to a beauty-focused fund. A senior door-opener to cosmetics groups beyond the current anchors.</p>
+  <div class="m-tags"><span class="tag t-sec">Cosmetics &amp; Beauty</span><span class="tag t-sk">International Expansion</span><span class="tag t-sk">BD</span><span class="tag t-sk">Fundraising Prep</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/laurent-lautier-27aa474" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pd">JL</div>
+      <div><div class="m-name">Joep Lambalk</div><div class="m-loc">🇳🇱 Purmerend, Netherlands</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 8.2</span><span class="pill p-conf">Conf. 7.0</span></div>
+    <div class="confbar"><span style="width:70%"></span></div>
+    <span class="a-badge a-pd">Product Development</span>
+  </div>
+  <p class="m-rat">Former Chief Scientific Officer at Enza Zaden (seed and plant breeding) who now does technical due diligence for PE funds. The best in-house reviewer of species selection, growth recipes and the claimed x14–x54 yields.</p>
+  <div class="m-tags"><span class="tag t-sec">Agri-biotech</span><span class="tag t-sec">Plant Breeding</span><span class="tag t-sk">R&amp;D Scale-up</span><span class="tag t-sk">Technical Due Diligence</span><span class="tag t-geo">Netherlands</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/joep-lambalk-b326a0100" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-es">DB</div>
+      <div><div class="m-name">Delphine Bensimon</div><div class="m-loc">🇫🇷 Paris, France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 8.0</span><span class="pill p-conf">Conf. 7.5</span></div>
+    <div class="confbar"><span style="width:75%"></span></div>
+    <span class="a-badge a-es">Enterprise Sales</span>
+  </div>
+  <p class="m-rat">Currently Global Strategic Prospective Director at L&#x27;Oréal, working with L&#x27;Oréal&#x27;s BOLD fund and Station F. She gives inside reading on the L&#x27;Oréal path; she is also a customer insider, so manage the conflict of interest.</p>
+  <div class="m-tags"><span class="tag t-sec">Cosmetics &amp; Beauty</span><span class="tag t-sec">Dermo-cosmetics</span><span class="tag t-sk">Strategic Marketing</span><span class="tag t-sk">Scientific Relations</span><span class="tag t-sk">Corporate VC Exposure</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/delphine-bensimon-89360539" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-fs">GG</div>
+      <div><div class="m-name">Gregory Givron</div><div class="m-loc">🇫🇷 Reims, France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.9</span><span class="pill p-conf">Conf. 7.5</span></div>
+    <div class="confbar"><span style="width:75%"></span></div>
+    <span class="a-badge a-fs">Finance Structuration</span>
+  </div>
+  <p class="m-rat">Twelve years at Bpifrance, from chargé d&#x27;affaires to regional director. Fits the non-dilutive layer of the French opco (the deck cites $3M non-dilutive) ahead of the Series A.</p>
+  <div class="m-tags"><span class="tag t-sec">Public Innovation Finance</span><span class="tag t-sk">Non-dilutive Funding</span><span class="tag t-sk">Bpifrance</span><span class="tag t-sk">Business Plan</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/gr%C3%A9gory-givron/" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-es">GH</div>
+      <div><div class="m-name">Gitte Hesselholt</div><div class="m-loc">🇩🇰 Copenhagen, Denmark</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.8</span><span class="pill p-conf">Conf. 7.5</span></div>
+    <div class="confbar"><span style="width:75%"></span></div>
+    <span class="a-badge a-es">Enterprise Sales</span>
+  </div>
+  <p class="m-rat">Former McKinsey/BCG Partner with global commercial roles at Carlsberg, Coloplast and Radiometer, now CCO of a green-energy startup. Covers large-account sales discipline and pricing, and she mentored a scale-up CFO.</p>
+  <div class="m-tags"><span class="tag t-sec">FMCG</span><span class="tag t-sec">MedTech</span><span class="tag t-sec">Energy</span><span class="tag t-sk">Commercial Excellence</span><span class="tag t-sk">Pricing</span><span class="tag t-sk">CFO Mentoring</span><span class="tag t-geo">Denmark</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/gittehesselholt" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-fs">JN</div>
+      <div><div class="m-name">Jürgen Neumann</div><div class="m-loc">🇩🇪 Nördlingen, Germany</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.8</span><span class="pill p-conf">Conf. 7.5</span></div>
+    <div class="confbar"><span style="width:75%"></span></div>
+    <span class="a-badge a-fs">Finance Structuration</span>
+  </div>
+  <p class="m-rat">Long-time CFO/CEO who took a PE-backed MedTech manufacturer from €40M to €80M with a €15M EBITDA increase. A good fit for manufacturing cost control, KPIs and cost-per-unit discipline.</p>
+  <div class="m-tags"><span class="tag t-sec">Manufacturing</span><span class="tag t-sec">MedTech</span><span class="tag t-sec">Aerospace (some)</span><span class="tag t-sk">CFO</span><span class="tag t-sk">PE Lifecycle</span><span class="tag t-sk">Turnaround</span><span class="tag t-geo">Germany</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/j%C3%BCrgen-neumann" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-fs">JE</div>
+      <div><div class="m-name">Julien Etaix</div><div class="m-loc">🇫🇷 Paris, France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.7</span><span class="pill p-conf">Conf. 6.5</span><span class="status-flag">⚠ On hold</span></div>
+    <div class="confbar"><span style="width:65%"></span></div>
+    <span class="a-badge a-fs">Finance Structuration</span>
+  </div>
+  <p class="m-rat">Former VC at Airbus Ventures and Upfront Ventures covering Seed to Series C in Europe, the US and Japan. A rare investor lens on space-adjacent rounds; status is on hold.</p>
+  <div class="m-tags"><span class="tag t-sec">Aerospace VC</span><span class="tag t-sec">Venture Capital</span><span class="tag t-sk">Series A Strategy</span><span class="tag t-sk">Cross-border Fundraising</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://linkedin.com/in/julienetaix" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pd">RM</div>
+      <div><div class="m-name">Raphaël Mansuy</div><div class="m-loc">🇭🇰 Hong Kong</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.6</span><span class="pill p-conf">Conf. 7.5</span></div>
+    <div class="confbar"><span style="width:75%"></span></div>
+    <span class="a-badge a-pd">Product Development</span>
+  </div>
+  <p class="m-rat">Founded and sold Caliatys (AI-driven industrial supply-chain software) to Air Liquide. Helps fill the missing C-level software/AI lead behind the swarm-optimisation and computer-vision stack.</p>
+  <div class="m-tags"><span class="tag t-sec">Industrial AI</span><span class="tag t-sec">Supply Chain</span><span class="tag t-sk">AI/ML Architecture</span><span class="tag t-sk">Technical Founder</span><span class="tag t-geo">Hong Kong</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/raphaelmansuy/" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-fs">MK</div>
+      <div><div class="m-name">Marc Karako</div><div class="m-loc">🇫🇷 Paris, France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.6</span><span class="pill p-conf">Conf. 7.0</span></div>
+    <div class="confbar"><span style="width:70%"></span></div>
+    <span class="a-badge a-fs">Finance Structuration</span>
+  </div>
+  <p class="m-rat">Three decades as CFO of listed groups including Vallourec, Technicolor, Cabot (specialty chemicals) and Quantum Genomics. Brings board-level reporting and structuring experience.</p>
+  <div class="m-tags"><span class="tag t-sec">Industrials</span><span class="tag t-sec">Specialty Chemicals</span><span class="tag t-sec">BioTech</span><span class="tag t-sk">CFO</span><span class="tag t-sk">Board Governance</span><span class="tag t-sk">Financial Structuring</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/marc-karako" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-es">JS</div>
+      <div><div class="m-name">Jerome Sutter</div><div class="m-loc">🇧🇪 Brussels, Belgium</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.6</span><span class="pill p-conf">Conf. 7.0</span></div>
+    <div class="confbar"><span style="width:70%"></span></div>
+    <span class="a-badge a-es">Enterprise Sales</span>
+  </div>
+  <p class="m-rat">Chief Growth Officer / Deputy CEO at Pileje (nutraceuticals) and Puressentiel (botanical essential oils), plus Filorga. These are botanical-ingredient buyers, a downstream customer segment to test.</p>
+  <div class="m-tags"><span class="tag t-sec">Nutraceuticals</span><span class="tag t-sec">Botanical Brands</span><span class="tag t-sec">Beauty</span><span class="tag t-sk">International Growth</span><span class="tag t-sk">E-commerce</span><span class="tag t-sk">Brand Strategy</span><span class="tag t-geo">Belgium</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/jeromesutter/" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-is">VP</div>
+      <div><div class="m-name">Vincent Pineau</div><div class="m-loc">🇺🇸 United States</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.6</span><span class="pill p-conf">Conf. 7.0</span></div>
+    <div class="confbar"><span style="width:70%"></span></div>
+    <span class="a-badge a-is">International Scaling</span>
+  </div>
+  <p class="m-rat">Has repeatedly launched and scaled US operations for European tech companies (Talend, Traefik Labs, Jenji, Fipto). Brings the hands-on mechanics of opening a US entity and team.</p>
+  <div class="m-tags"><span class="tag t-sec">B2B Tech</span><span class="tag t-sk">US Launch</span><span class="tag t-sk">COO / GM</span><span class="tag t-sk">GTM</span><span class="tag t-geo">United States</span></div>
+  <a class="m-li" href="https://linkedin.com/in/vince-pineau" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pa">JO</div>
+      <div><div class="m-name">Johan Orsingher</div><div class="m-loc">🇨🇭 Grand-Saconnex, Switzerland</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.6</span><span class="pill p-conf">Conf. 6.5</span></div>
+    <div class="confbar"><span style="width:65%"></span></div>
+    <span class="a-badge a-pa">Partnerships</span>
+  </div>
+  <p class="m-rat">Career across Thales, Ariane and Airbus (VP roles, satellite imagery), now supporting deep-tech commercialisation at NUS/GRIP. A secondary space-industry voice for partner selection.</p>
+  <div class="m-tags"><span class="tag t-sec">Aerospace</span><span class="tag t-sec">Space</span><span class="tag t-sec">Fintech</span><span class="tag t-sk">Sales &amp; Marketing</span><span class="tag t-sk">Deeptech Commercialisation</span><span class="tag t-geo">Switzerland</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/johan-orsingher" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-es">CH</div>
+      <div><div class="m-name">Chris Holmes</div><div class="m-loc">🇨🇭 Basel, Switzerland</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.5</span><span class="pill p-conf">Conf. 7.0</span></div>
+    <div class="confbar"><span style="width:70%"></span></div>
+    <span class="a-badge a-es">Enterprise Sales</span>
+  </div>
+  <p class="m-rat">Led up to $4.2B of procurement at Novartis and Avantor. Explains from the buyer side how large groups qualify, contract and price a new strategic supplier.</p>
+  <div class="m-tags"><span class="tag t-sec">Pharma</span><span class="tag t-sec">Life Sciences</span><span class="tag t-sec">Sourcing</span><span class="tag t-sk">Procurement</span><span class="tag t-sk">Supplier Qualification</span><span class="tag t-sk">Sustainable Sourcing</span><span class="tag t-geo">Switzerland</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/cholmesie" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-es">AB</div>
+      <div><div class="m-name">Adrian Badea</div><div class="m-loc">🇵🇹 Lisbon, Portugal</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.5</span><span class="pill p-conf">Conf. 7.0</span></div>
+    <div class="confbar"><span style="width:70%"></span></div>
+    <span class="a-badge a-es">Enterprise Sales</span>
+  </div>
+  <p class="m-rat">Former Sales Director/CEO at PETKUS and sales manager at Bühler (agri-industrial equipment), and founder of SiloApp. Relevant to selling high-ticket growing equipment plus services.</p>
+  <div class="m-tags"><span class="tag t-sec">Agri-industrial Equipment</span><span class="tag t-sec">Agritech</span><span class="tag t-sk">Industrial Equipment Sales</span><span class="tag t-sk">GTM</span><span class="tag t-geo">Portugal</span></div>
+  <a class="m-li" href="https://linkedin.com/in/adrian-badea" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-es">FH</div>
+      <div><div class="m-name">Frédéric Herlin</div><div class="m-loc">🇫🇷 Theix-Noyalo, France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.5</span><span class="pill p-conf">Conf. 6.5</span></div>
+    <div class="confbar"><span style="width:65%"></span></div>
+    <span class="a-badge a-es">Enterprise Sales</span>
+  </div>
+  <p class="m-rat">Long L&#x27;Oréal leadership career, later a CEO in consumer beauty. Adds to the bench of cosmetics-group door-openers; notes flag limited time in Q4.</p>
+  <div class="m-tags"><span class="tag t-sec">Cosmetics &amp; Beauty</span><span class="tag t-sk">P&amp;L Leadership</span><span class="tag t-sk">Cross-border Expansion</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/fredericherlin" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-fs">PM</div>
+      <div><div class="m-name">Philippe Mattia</div><div class="m-loc">🇫🇷 France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.5</span><span class="pill p-conf">Conf. 6.5</span><span class="status-flag">⚠ On hold</span></div>
+    <div class="confbar"><span style="width:65%"></span></div>
+    <span class="a-badge a-fs">Finance Structuration</span>
+  </div>
+  <p class="m-rat">Co-founded Delta Drone (Euronext IPO) and sold Maya Technologies, now coaching deeptech/hardware fundraising. Status is on hold.</p>
+  <div class="m-tags"><span class="tag t-sec">Hardware</span><span class="tag t-sec">Deeptech</span><span class="tag t-sec">IoT</span><span class="tag t-sk">Fundraising</span><span class="tag t-sk">M&amp;A</span><span class="tag t-sk">Investor Readiness</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/philippemattia/" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pd">VD</div>
+      <div><div class="m-name">Vincent Dujardin</div><div class="m-loc">🇧🇪 Waterloo, Belgium</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.5</span><span class="pill p-conf">Conf. 6.5</span></div>
+    <div class="confbar"><span style="width:65%"></span></div>
+    <span class="a-badge a-pd">Product Development</span>
+  </div>
+  <p class="m-rat">Former CTO at Lhoist and President &amp; CEO of EverZinc, now CEO of an early-stage battery company. Brings industrial process scale-up from both the corporate and the startup side.</p>
+  <div class="m-tags"><span class="tag t-sec">Industrial Manufacturing</span><span class="tag t-sec">Materials</span><span class="tag t-sec">Batteries</span><span class="tag t-sk">Operations</span><span class="tag t-sk">CTO</span><span class="tag t-sk">P&amp;L</span><span class="tag t-geo">Belgium</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/vincent-dujardin-28212613" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pd">GB</div>
+      <div><div class="m-name">Gary Brown</div><div class="m-loc">🇸🇪 Gothenburg, Sweden</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.4</span><span class="pill p-conf">Conf. 7.0</span></div>
+    <div class="confbar"><span style="width:70%"></span></div>
+    <span class="a-badge a-pd">Product Development</span>
+  </div>
+  <p class="m-rat">Former CEO of Mont Blanc Group, where he relocated production and lifted EBITDA, and led product development at Ford, Volvo and Ideal Heating. Practical help on launch-to-production execution.</p>
+  <div class="m-tags"><span class="tag t-sec">Automotive</span><span class="tag t-sec">Building Products</span><span class="tag t-sec">IoT</span><span class="tag t-sk">New Product Launch</span><span class="tag t-sk">Production Relocation</span><span class="tag t-sk">Turnaround</span><span class="tag t-geo">Sweden</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/garyinnovativebrown" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-is">JV</div>
+      <div><div class="m-name">Jocelyn Vigreux</div><div class="m-loc">🇺🇸 Boston, United States</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.4</span><span class="pill p-conf">Conf. 6.5</span></div>
+    <div class="confbar"><span style="width:65%"></span></div>
+    <span class="a-badge a-is">International Scaling</span>
+  </div>
+  <p class="m-rat">Boston-based; built TomTom&#x27;s US consumer brand from launch, now CRO at Brod &amp; Taylor. Brings US hardware commercialisation experience.</p>
+  <div class="m-tags"><span class="tag t-sec">Consumer Hardware</span><span class="tag t-sec">Electronics</span><span class="tag t-sk">US Market Launch</span><span class="tag t-sk">Revenue Strategy</span><span class="tag t-geo">United States</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/jocelyn-vigreux-2315668/?originalSubdomain=fr" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-is">HS</div>
+      <div><div class="m-name">Hervé Seux</div><div class="m-loc">🇺🇸 Boston, United States</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.4</span><span class="pill p-conf">Conf. 6.5</span></div>
+    <div class="confbar"><span style="width:65%"></span></div>
+    <span class="a-badge a-is">International Scaling</span>
+  </div>
+  <p class="m-rat">Boston-based engineer who co-founded Signoptic (acquired by Arjowiggins) and invests through the Climate Club. A French founder operating in the US Northeast.</p>
+  <div class="m-tags"><span class="tag t-sec">B2B Industrial Tech</span><span class="tag t-sec">Climate</span><span class="tag t-sk">Exit</span><span class="tag t-sk">Business Model</span><span class="tag t-sk">US Operations</span><span class="tag t-geo">United States</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/herve-seux/" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pa">EA</div>
+      <div><div class="m-name">Edgar Auslander</div><div class="m-loc">🇺🇸 San Francisco, United States</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.4</span><span class="pill p-conf">Conf. 6.5</span><span class="status-flag">⚠ Special request only</span></div>
+    <div class="confbar"><span style="width:65%"></span></div>
+    <span class="a-badge a-pa">Partnerships</span>
+  </div>
+  <p class="m-rat">Built partnership functions at TI, Intel and Meta (EssilorLuxottica deal) and led an M&amp;A exit. Useful for structuring large corporate partnerships; status is special request only.</p>
+  <div class="m-tags"><span class="tag t-sec">Semiconductors</span><span class="tag t-sec">AR/VR Hardware</span><span class="tag t-sk">Strategic Partnerships</span><span class="tag t-sk">M&amp;A</span><span class="tag t-sk">Corporate Strategy</span><span class="tag t-geo">United States</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/edgarauslander/" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pd">SS</div>
+      <div><div class="m-name">Sebastian Simon</div><div class="m-loc">🇩🇪 Munich, Germany</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.4</span><span class="pill p-conf">Conf. 6.0</span></div>
+    <div class="confbar"><span style="width:60%"></span></div>
+    <span class="a-badge a-pd">Product Development</span>
+  </div>
+  <p class="m-rat">COO/Co-CEO roles at Bosch Rexroth, Palfinger and Meiller, ex-McKinsey. Brings manufacturing operations depth for the production park; notes are thin.</p>
+  <div class="m-tags"><span class="tag t-sec">Industrial Manufacturing</span><span class="tag t-sk">Operations</span><span class="tag t-sk">Supply Chain</span><span class="tag t-sk">Transformation</span><span class="tag t-geo">Germany</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/i-am-sebastian-simon" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-is">AR</div>
+      <div><div class="m-name">Alasdair Rambaud</div><div class="m-loc">🇺🇸 Alpharetta, United States</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.3</span><span class="pill p-conf">Conf. 6.5</span></div>
+    <div class="confbar"><span style="width:65%"></span></div>
+    <span class="a-badge a-is">International Scaling</span>
+  </div>
+  <p class="m-rat">French-born and 28 years in the US; notes cite investments in vaccine development and an interest in algae-based energy. A bridge for US equipment financing and leasing models.</p>
+  <div class="m-tags"><span class="tag t-sec">Fintech</span><span class="tag t-sec">Biotech (investor)</span><span class="tag t-sk">US Expansion</span><span class="tag t-sk">Fundraising</span><span class="tag t-sk">CRO</span><span class="tag t-geo">United States</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/alasdair-rambaud/" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-fs">NL</div>
+      <div><div class="m-name">Nicolas Lehmann</div><div class="m-loc">🇨🇭 Zürich, Switzerland</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.3</span><span class="pill p-conf">Conf. 6.5</span></div>
+    <div class="confbar"><span style="width:65%"></span></div>
+    <span class="a-badge a-fs">Finance Structuration</span>
+  </div>
+  <p class="m-rat">Former CFO/Head of Finance at LEDCity (cleantech hardware), P&amp;G and Google background, with 25+ angel deals. Brings a hardware-scale-up finance lens.</p>
+  <div class="m-tags"><span class="tag t-sec">CleanTech Hardware</span><span class="tag t-sec">Mobility</span><span class="tag t-sk">CFO</span><span class="tag t-sk">Controlling</span><span class="tag t-sk">Finance Team Build</span><span class="tag t-geo">Switzerland</span></div>
+  <a class="m-li" href="https://ch.linkedin.com/in/nicolaslehmann" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-es">CM</div>
+      <div><div class="m-name">Carlo Mazzarella</div><div class="m-loc">🇮🇹 Milan, Italy</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.3</span><span class="pill p-conf">Conf. 6.5</span></div>
+    <div class="confbar"><span style="width:65%"></span></div>
+    <span class="a-badge a-es">Enterprise Sales</span>
+  </div>
+  <p class="m-rat">Founder in cosmetics (Butterfly Effect, MUD Italia) and former Cosmetica Italia board member. Gives access to the Italian cosmetics manufacturing ecosystem.</p>
+  <div class="m-tags"><span class="tag t-sec">Cosmetics</span><span class="tag t-sec">Regulatory</span><span class="tag t-sk">Cosmetics Industry Network</span><span class="tag t-sk">Restructuring</span><span class="tag t-geo">Italy</span></div>
+  <a class="m-li" href="https://linkedin.com/in/carlomazzarella" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pa">CI</div>
+      <div><div class="m-name">Claudia Stuckmann-Invernizzi</div><div class="m-loc">🇧🇪 Brussels, Belgium</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.3</span><span class="pill p-conf">Conf. 6.5</span></div>
+    <div class="confbar"><span style="width:65%"></span></div>
+    <span class="a-badge a-pa">Partnerships</span>
+  </div>
+  <p class="m-rat">Global public affairs and regulatory leadership at BASF, Zoetis and Neste across chemicals, plant health and agriculture. Relevant to positioning the &#x27;clean, traceable botanicals&#x27; claim with corporates and regulators.</p>
+  <div class="m-tags"><span class="tag t-sec">Chemicals</span><span class="tag t-sec">Plant Health</span><span class="tag t-sec">Agri</span><span class="tag t-sk">Regulatory Strategy</span><span class="tag t-sk">Public Affairs</span><span class="tag t-sk">Stakeholder Mgmt</span><span class="tag t-geo">Belgium</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/claudia-stuckmann-invernizzi" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-is">AV</div>
+      <div><div class="m-name">Antoine Villata</div><div class="m-loc">🇺🇸 San Francisco, United States</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.3</span><span class="pill p-conf">Conf. 6.0</span><span class="status-flag">⚠ On hold</span></div>
+    <div class="confbar"><span style="width:60%"></span></div>
+    <span class="a-badge a-is">International Scaling</span>
+  </div>
+  <p class="m-rat">Scaled Planisware North America from under $10M to over $100M with 250+ people. A strong US scaling operator, though not sector-specific; status is on hold.</p>
+  <div class="m-tags"><span class="tag t-sec">Enterprise Software</span><span class="tag t-sk">North America Scaling</span><span class="tag t-sk">Services Delivery</span><span class="tag t-geo">United States</span></div>
+  <a class="m-li" href="https://linkedin.com/in/antoinevillata" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-is">ED</div>
+      <div><div class="m-name">Erik d&#x27;Auchamp</div><div class="m-loc">🇪🇸 Spain</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.3</span><span class="pill p-conf">Conf. 6.0</span></div>
+    <div class="confbar"><span style="width:60%"></span></div>
+    <span class="a-badge a-is">International Scaling</span>
+  </div>
+  <p class="m-rat">Former CEO North America at foodtech Ferm Food and US roles at Mahou San Miguel; invests in CPG and agritech. Brings US food and ingredients channel experience.</p>
+  <div class="m-tags"><span class="tag t-sec">Food &amp; Beverage</span><span class="tag t-sec">FoodTech</span><span class="tag t-sk">US Launch</span><span class="tag t-sk">Brand Building</span><span class="tag t-geo">Spain</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/erik-d-auchamp-8b851b3" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pa">CC</div>
+      <div><div class="m-name">Christophe Cazes</div><div class="m-loc">🇸🇬 Singapore</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.3</span><span class="pill p-conf">Conf. 6.0</span><span class="status-flag">⚠ Approved to onboard</span></div>
+    <div class="confbar"><span style="width:60%"></span></div>
+    <span class="a-badge a-pa">Partnerships</span>
+  </div>
+  <p class="m-rat">Senior Eutelsat executive in APAC, later at Thomson and Technicolor. Adds a satellite-industry commercial perspective for space partners.</p>
+  <div class="m-tags"><span class="tag t-sec">Satellite / Telecom</span><span class="tag t-sec">Hardware</span><span class="tag t-sk">Large Accounts</span><span class="tag t-sk">Strategic Partnerships</span><span class="tag t-geo">Singapore</span></div>
+  <a class="m-li" href="https://linkedin.com/in/christophe-cazes-ab02aa8" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pd">PB</div>
+      <div><div class="m-name">Pierre Baillet</div><div class="m-loc">🇫🇷 Bordeaux, France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.3</span><span class="pill p-conf">Conf. 6.0</span></div>
+    <div class="confbar"><span style="width:60%"></span></div>
+    <span class="a-badge a-pd">Product Development</span>
+  </div>
+  <p class="m-rat">Engineering manager at Loft Orbital (space infrastructure), Datadog and Sonos. A technical sounding board for the software lead the memo flags as missing.</p>
+  <div class="m-tags"><span class="tag t-sec">Space Infrastructure</span><span class="tag t-sec">Cloud</span><span class="tag t-sk">Engineering Management</span><span class="tag t-sk">Infrastructure / SRE</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/octplane" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pa">AS</div>
+      <div><div class="m-name">Andrea Saiani</div><div class="m-loc">🇮🇹 Rovereto, Italy</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.2</span><span class="pill p-conf">Conf. 6.5</span></div>
+    <div class="confbar"><span style="width:65%"></span></div>
+    <span class="a-badge a-pa">Partnerships</span>
+  </div>
+  <p class="m-rat">Builds autonomous robotics for extreme environments and has raised non-dilutive funding, with a decade of EIT/Lean Startup mentoring. A relevant peer for hardware in harsh environments.</p>
+  <div class="m-tags"><span class="tag t-sec">Robotics</span><span class="tag t-sec">Extreme Environments</span><span class="tag t-sec">Marine</span><span class="tag t-sk">Non-dilutive Funding</span><span class="tag t-sk">Business Model</span><span class="tag t-sk">MVP</span><span class="tag t-geo">Italy</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/andsai" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-fs">BL</div>
+      <div><div class="m-name">Boris Goudon de Lalande</div><div class="m-loc">🇫🇷 Paris, France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.2</span><span class="pill p-conf">Conf. 6.5</span></div>
+    <div class="confbar"><span style="width:65%"></span></div>
+    <span class="a-badge a-fs">Finance Structuration</span>
+  </div>
+  <p class="m-rat">Twenty years of FP&amp;A and controlling at L&#x27;Oréal and LVMH/Dior. Knows how cosmetics groups model supplier cost, useful when building the cost-per-kg case for buyers.</p>
+  <div class="m-tags"><span class="tag t-sec">Cosmetics</span><span class="tag t-sec">Luxury</span><span class="tag t-sk">FP&amp;A</span><span class="tag t-sk">Group Reporting</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/boris-goudon-de-lalande-4523862" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-fs">TS</div>
+      <div><div class="m-name">Tim Seears</div><div class="m-loc">🇬🇧 London, United Kingdom</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.2</span><span class="pill p-conf">Conf. 6.0</span></div>
+    <div class="confbar"><span style="width:60%"></span></div>
+    <span class="a-badge a-fs">Finance Structuration</span>
+  </div>
+  <p class="m-rat">Exited founder (Big Data Partnership, acquired by Teradata) and active angel; notes cite investments in AI, cleantech and spacetech. Brings an investor view of the space round.</p>
+  <div class="m-tags"><span class="tag t-sec">Big Data</span><span class="tag t-sec">SpaceTech (investor)</span><span class="tag t-sec">CleanTech</span><span class="tag t-sk">Fundraising</span><span class="tag t-sk">Exit</span><span class="tag t-sk">Business Model</span><span class="tag t-geo">United Kingdom</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/tseears" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pa">AC</div>
+      <div><div class="m-name">Antoine Chamussy</div><div class="m-loc">🇫🇷 Montpellier, France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.2</span><span class="pill p-conf">Conf. 6.0</span></div>
+    <div class="confbar"><span style="width:60%"></span></div>
+    <span class="a-badge a-pa">Partnerships</span>
+  </div>
+  <p class="m-rat">Agricultural engineer who co-founded VOL-V Solar and sits on agtech and climate startup boards. Brings agri-corporate and impact-investor connections.</p>
+  <div class="m-tags"><span class="tag t-sec">Agritech</span><span class="tag t-sec">Renewables</span><span class="tag t-sec">Impact</span><span class="tag t-sk">M&amp;A</span><span class="tag t-sk">Board Roles</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://linkedin.com/in/antoine-chamussy" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-fs">DW</div>
+      <div><div class="m-name">Douglas Wong</div><div class="m-loc">🇩🇪 Munich, Germany</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.2</span><span class="pill p-conf">Conf. 6.0</span><span class="status-flag">⚠ Approved to onboard</span></div>
+    <div class="confbar"><span style="width:60%"></span></div>
+    <span class="a-badge a-fs">Finance Structuration</span>
+  </div>
+  <p class="m-rat">Ex-CFO of Apple Central Europe and exited founder, now investing in pre-seed agritech and food with physical components.</p>
+  <div class="m-tags"><span class="tag t-sec">Agritech (investor)</span><span class="tag t-sec">Distribution</span><span class="tag t-sk">CFO</span><span class="tag t-sk">Fundraising</span><span class="tag t-geo">Germany</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/douglas-wong-85202128/" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pa">TN</div>
+      <div><div class="m-name">Thomas Nathan</div><div class="m-loc">🇫🇷 Paris, France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.2</span><span class="pill p-conf">Conf. 5.5</span></div>
+    <div class="confbar"><span style="width:55%"></span></div>
+    <span class="a-badge a-pa">Partnerships</span>
+  </div>
+  <p class="m-rat">Engineering stint at Airbus/NASA and aerospace &amp; defense consulting (AVENCORE), then repeat founder: hardware startup Reax (L&#x27;Oréal Dare Award winner) and La Tournée, which raised €7M and was acquired. A space-literate product operator, though his notes are thin.</p>
+  <div class="m-tags"><span class="tag t-sec">Aerospace</span><span class="tag t-sec">Hardware</span><span class="tag t-sec">Logistics</span><span class="tag t-sk">Product</span><span class="tag t-sk">Aerospace Consulting</span><span class="tag t-sk">Founder</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/tnathan?miniProfileUrn=urn%3Ali%3Afs_miniProfile%3AACoAAA0InSEBmkC-UFE_RNblP0jc9v2IE6u5-EM" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-fs">HC</div>
+      <div><div class="m-name">Hubert Caudron</div><div class="m-loc">🇫🇷 Paris, France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.1</span><span class="pill p-conf">Conf. 6.5</span></div>
+    <div class="confbar"><span style="width:65%"></span></div>
+    <span class="a-badge a-fs">Finance Structuration</span>
+  </div>
+  <p class="m-rat">Operational CFO (incl. Grands Moulins de Paris export) with bank refinancing and working-capital depth. Relevant to financing equipment-heavy revenue.</p>
+  <div class="m-tags"><span class="tag t-sec">Food</span><span class="tag t-sec">Retail</span><span class="tag t-sk">CFO</span><span class="tag t-sk">Debt Refinancing</span><span class="tag t-sk">Working Capital</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://nz.linkedin.com/in/hubert-caudron" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-fs">IA</div>
+      <div><div class="m-name">Isabelle Albert</div><div class="m-loc">🇫🇷 Paris, France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.1</span><span class="pill p-conf">Conf. 6.0</span></div>
+    <div class="confbar"><span style="width:60%"></span></div>
+    <span class="a-badge a-fs">Finance Structuration</span>
+  </div>
+  <p class="m-rat">Founding COO of Satgana and an investor in 25+ climate, agri and food startups. Brings an impact-investor reading for the Series A.</p>
+  <div class="m-tags"><span class="tag t-sec">Climate / Agri / Food VC</span><span class="tag t-sk">Fund Structuring</span><span class="tag t-sk">Impact DD</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/isabellealbert/" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pa">FB</div>
+      <div><div class="m-name">Franck Besnard</div><div class="m-loc">🇫🇷 Paris, France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.1</span><span class="pill p-conf">Conf. 6.0</span></div>
+    <div class="confbar"><span style="width:60%"></span></div>
+    <span class="a-badge a-pa">Partnerships</span>
+  </div>
+  <p class="m-rat">Set up Airbus Defence and Space&#x27;s first operations department in Brazil and ran large infrastructure bids. Adds bid and contract discipline for agency tenders.</p>
+  <div class="m-tags"><span class="tag t-sec">Aerospace</span><span class="tag t-sec">Infrastructure</span><span class="tag t-sk">Bid Management</span><span class="tag t-sk">International Ops</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/franck-besnard-ab708844?miniProfileUrn=urn%3Ali%3Afs_miniProfile%3AACoAAAlEBCsBILvt00065tABG51NqM_4JW60URE" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-es">JF</div>
+      <div><div class="m-name">Jerome Feuvrier</div><div class="m-loc">🇫🇷 Mareuil en Périgord, France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.1</span><span class="pill p-conf">Conf. 6.0</span></div>
+    <div class="confbar"><span style="width:60%"></span></div>
+    <span class="a-badge a-es">Enterprise Sales</span>
+  </div>
+  <p class="m-rat">Former CCO and management-board member (Ansell, GE Healthcare) who invests through Aerospace Angels. Brings a large-group B2B sales lens.</p>
+  <div class="m-tags"><span class="tag t-sec">Manufacturing</span><span class="tag t-sec">Healthcare Equipment</span><span class="tag t-sk">Commercial Transformation</span><span class="tag t-sk">Global B2B Sales</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/jeromefeuvrier" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-fs">YS</div>
+      <div><div class="m-name">Yves Sisteron</div><div class="m-loc">🇺🇸 Los Angeles, United States</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.1</span><span class="pill p-conf">Conf. 5.5</span><span class="status-flag">⚠ On hold</span></div>
+    <div class="confbar"><span style="width:55%"></span></div>
+    <span class="a-badge a-fs">Finance Structuration</span>
+  </div>
+  <p class="m-rat">Co-founded Upfront Ventures (LA) and led it for 26 years, now at Commodity Capital. Offers a US Series A investor perspective; status is on hold and notes are thin.</p>
+  <div class="m-tags"><span class="tag t-sec">Venture Capital</span><span class="tag t-sk">US VC Network</span><span class="tag t-sk">Fundraising</span><span class="tag t-geo">United States</span></div>
+  <a class="m-li" href="https://linkedin.com/in/yves-sisteron-6292506" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-fs">AF</div>
+      <div><div class="m-name">Alex Furer</div><div class="m-loc">🇺🇸 Stamford, United States</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.0</span><span class="pill p-conf">Conf. 6.5</span></div>
+    <div class="confbar"><span style="width:65%"></span></div>
+    <span class="a-badge a-fs">Finance Structuration</span>
+  </div>
+  <p class="m-rat">US startup finance lead (Plaid, Notabene, lululemon Studio) with Series A–C experience. A US-side complement for the US C-Corp&#x27;s reporting.</p>
+  <div class="m-tags"><span class="tag t-sec">Fintech</span><span class="tag t-sec">SaaS</span><span class="tag t-sk">Startup CFO</span><span class="tag t-sk">Series A–C</span><span class="tag t-sk">Pricing</span><span class="tag t-geo">United States</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/alexander-furer/" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-es">SR</div>
+      <div><div class="m-name">Stephanie Rozan</div><div class="m-loc">🇫🇷 France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.0</span><span class="pill p-conf">Conf. 6.5</span></div>
+    <div class="confbar"><span style="width:65%"></span></div>
+    <span class="a-badge a-es">Enterprise Sales</span>
+  </div>
+  <p class="m-rat">Senior roles at L&#x27;Oréal Luxe, Sephora and Clarins. Useful for the consumer-facing story (e.g. Lancôme ingredient storytelling) more than for B2B sales.</p>
+  <div class="m-tags"><span class="tag t-sec">Beauty</span><span class="tag t-sec">Luxury Retail</span><span class="tag t-sk">Brand Strategy</span><span class="tag t-sk">Launches</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/stephanie-rozan-thiard/en" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pa">SH</div>
+      <div><div class="m-name">Semi Hakim</div><div class="m-loc">🇳🇱 Amsterdam, Netherlands</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.0</span><span class="pill p-conf">Conf. 6.0</span></div>
+    <div class="confbar"><span style="width:60%"></span></div>
+    <span class="a-badge a-pa">Partnerships</span>
+  </div>
+  <p class="m-rat">Co-founder of Kök Projekt / Kök Ventures, advising agri-food corporates and governments. Brings a water-tech and food-system network.</p>
+  <div class="m-tags"><span class="tag t-sec">Agri-food</span><span class="tag t-sec">Water Tech</span><span class="tag t-sk">Agri-food Strategy</span><span class="tag t-sk">Corporate &amp; Government Advisory</span><span class="tag t-geo">Netherlands</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/semihakim/" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-es">LT</div>
+      <div><div class="m-name">Loic Tardy</div><div class="m-loc">🇫🇷 France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.0</span><span class="pill p-conf">Conf. 6.0</span></div>
+    <div class="confbar"><span style="width:60%"></span></div>
+    <span class="a-badge a-es">Enterprise Sales</span>
+  </div>
+  <p class="m-rat">CEO/GM roles at Unilever and L&#x27;Oréal across Southeast Asia and Greater China. Adds an Asian cosmetics-group network.</p>
+  <div class="m-tags"><span class="tag t-sec">FMCG</span><span class="tag t-sec">Beauty</span><span class="tag t-sk">General Management</span><span class="tag t-sk">Brand Building</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://linkedin.com/in/loic-tardy-94ab3a4" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pa">FW</div>
+      <div><div class="m-name">Francois-Xavier Schaeken Willemaers</div><div class="m-loc">🇫🇷 Paris, France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.0</span><span class="pill p-conf">Conf. 6.0</span></div>
+    <div class="confbar"><span style="width:60%"></span></div>
+    <span class="a-badge a-pa">Partnerships</span>
+  </div>
+  <p class="m-rat">Telecom executive (Orange, Telenet) whose notes cover satellite/ground infrastructure and hyperscaler partnerships. Peripheral to plant payloads.</p>
+  <div class="m-tags"><span class="tag t-sec">Telecom</span><span class="tag t-sec">Satellite Ground Infra</span><span class="tag t-sk">Operator Partnerships</span><span class="tag t-sk">M&amp;A</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/fxschaeken/" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pd">MG</div>
+      <div><div class="m-name">Marie Gepel</div><div class="m-loc">🇫🇷 Paris, France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.0</span><span class="pill p-conf">Conf. 6.0</span></div>
+    <div class="confbar"><span style="width:60%"></span></div>
+    <span class="a-badge a-pd">Product Development</span>
+  </div>
+  <p class="m-rat">Led Data &amp; AI strategy and teams of up to 120 at Thales, La Poste and Technip Energies. A credible adviser for scoping the C-level software/AI lead the memo flags as missing.</p>
+  <div class="m-tags"><span class="tag t-sec">Defense / Industrial (Thales)</span><span class="tag t-sec">Energy</span><span class="tag t-sk">Data &amp; AI Strategy</span><span class="tag t-sk">Large-team Operations</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/mariegepel" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pd">WB</div>
+      <div><div class="m-name">William Brendel</div><div class="m-loc">🇺🇸 Los Angeles, United States</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.0</span><span class="pill p-conf">Conf. 6.0</span></div>
+    <div class="confbar"><span style="width:60%"></span></div>
+    <span class="a-badge a-pd">Product Development</span>
+  </div>
+  <p class="m-rat">Applied AI/ML at Google, Amazon and Snap, and co-founder of a nutrition startup; Los Angeles-based. Can help scope the AI roadmap and the AI lead hire.</p>
+  <div class="m-tags"><span class="tag t-sec">AI/ML</span><span class="tag t-sec">Nutrition Tech</span><span class="tag t-sk">Applied AI</span><span class="tag t-sk">Technical Architecture</span><span class="tag t-geo">United States</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/william-brendel" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pd">OB</div>
+      <div><div class="m-name">Oliver Braitmayer</div><div class="m-loc">🇩🇪 Munich, Germany</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.0</span><span class="pill p-conf">Conf. 5.5</span><span class="status-flag">⚠ Approved to onboard</span></div>
+    <div class="confbar"><span style="width:55%"></span></div>
+    <span class="a-badge a-pd">Product Development</span>
+  </div>
+  <p class="m-rat">Siemens SVP with supply-chain, manufacturing and engineering management roles in Germany, the US and Brazil. Status: approved to onboard.</p>
+  <div class="m-tags"><span class="tag t-sec">Industrial / Energy</span><span class="tag t-sk">Supply Chain</span><span class="tag t-sk">Manufacturing Mgmt</span><span class="tag t-sk">Enterprise Sales</span><span class="tag t-geo">Germany</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/dr-oliver-braitmayer-a62594/" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-es">AL</div>
+      <div><div class="m-name">Andrea Landuzzi</div><div class="m-loc">🇮🇹 Bologna, Italy</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.0</span><span class="pill p-conf">Conf. 5.5</span><span class="status-flag">⚠ On hold</span></div>
+    <div class="confbar"><span style="width:55%"></span></div>
+    <span class="a-badge a-es">Enterprise Sales</span>
+  </div>
+  <p class="m-rat">Two decades at Ciba/BASF/Solvay in R&amp;D leadership and technical marketing. Relevant to selling a technical process to ingredient R&amp;D teams; status is on hold.</p>
+  <div class="m-tags"><span class="tag t-sec">Specialty Chemicals</span><span class="tag t-sk">Technical Marketing</span><span class="tag t-sk">Industrial B2B</span><span class="tag t-geo">Italy</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/andrealanduzzi/" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pa">RD</div>
+      <div><div class="m-name">Rui Duarte</div><div class="m-loc">🇨🇭 Pully, Switzerland</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.0</span><span class="pill p-conf">Conf. 5.5</span></div>
+    <div class="confbar"><span style="width:55%"></span></div>
+    <span class="a-badge a-pa">Partnerships</span>
+  </div>
+  <p class="m-rat">Holds equity in a space-economy startup developing microgravity medicine, which is directly adjacent to EDEN&#x27;s microgravity plant research. Also brings Philip Morris corporate affairs experience and is Geneva-based.</p>
+  <div class="m-tags"><span class="tag t-sec">Space Economy (investor)</span><span class="tag t-sec">Corporate Affairs</span><span class="tag t-sec">AI Governance</span><span class="tag t-sk">Public Affairs</span><span class="tag t-sk">Advisory</span><span class="tag t-geo">Switzerland</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/rpgduarte" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-fs">PR</div>
+      <div><div class="m-name">Patrick Renault</div><div class="m-loc">🇪🇸 Barcelona, Spain</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.0</span><span class="pill p-conf">Conf. 5.5</span></div>
+    <div class="confbar"><span style="width:55%"></span></div>
+    <span class="a-badge a-fs">Finance Structuration</span>
+  </div>
+  <p class="m-rat">Invests in aerospace (Mars Aircraft Holding) and is setting up working-capital financing for aerospace suppliers with long payment cycles. Relevant to cash-flow around lumpy pod and mission contracts.</p>
+  <div class="m-tags"><span class="tag t-sec">Aerospace (investor)</span><span class="tag t-sec">Retail</span><span class="tag t-sk">Working-capital Financing</span><span class="tag t-sk">Angel Investing</span><span class="tag t-geo">Spain</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/patrickrenault" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article><article class="m-card">
+  <div class="m-top">
+    <div class="m-head"><div class="av av-pd">MH</div>
+      <div><div class="m-name">Mathilde Henry</div><div class="m-loc">🇫🇷 France</div></div></div>
+    <div class="m-scores"><span class="pill p-dmf">DMF 7.0</span><span class="pill p-conf">Conf. 5.5</span></div>
+    <div class="confbar"><span style="width:55%"></span></div>
+    <span class="a-badge a-pd">Product Development</span>
+  </div>
+  <p class="m-rat">Ran 9-figure professional-services P&amp;Ls and teams of 100–300 at Adobe, Dassault Systèmes and SymphonyAI, with earlier roles at Mondelez and Capgemini. Fits scaling the recurring installation and service layer (~30% of pod price per year); no space or botanicals evidence on file.</p>
+  <div class="m-tags"><span class="tag t-sec">Enterprise Software</span><span class="tag t-sec">CPG</span><span class="tag t-sec">Supply Chain</span><span class="tag t-sk">Professional Services Scaling</span><span class="tag t-sk">Supply Chain Ops</span><span class="tag t-sk">KPI Management</span><span class="tag t-geo">France</span></div>
+  <a class="m-li" href="https://www.linkedin.com/in/mathildehenry/" target="_blank" rel="noopener">LinkedIn profile ↗</a>
+</article></div></section>
+
+<section class="sec" id="granola"><span class="s-tag">Granola-only · not in Affinity</span><h2>Pipeline Profiles Surfaced in Granola</h2>
+<p class="lead">Strong-fit people found in Granola meeting notes who have no Affinity mentor record yet. They are not scored or counted in the KPIs. Onboarding the first three would close the greenhouse-operations and botanicals-US gaps flagged in the confidence score.</p>
+<div class="ggrid"><div class="gcard"><b>Luis Fernandez</b><p>Former Mane executive (fragrance &amp; flavour), PhD in biochemistry, partnerships with Nestlé, Unilever and IFF; Plug and Play mentor who explicitly wants to mentor.</p><span class="a-badge a-es">Enterprise Sales</span></div><div class="gcard"><b>Aymeric de Gantès</b><p>Ten years of US business development at Naturex (acquired by Givaudan), then stevia biotech; now CEO of Enginzyme, whose largest partner is L&#x27;Oréal. Covers botanicals, the US and L&#x27;Oréal together.</p><span class="a-badge a-is">International Scaling</span></div><div class="gcard"><b>Laurent Cardinali</b><p>Former Danone Global Engineering Director and Mondelez VP Engineering; led pilots, demonstrators and greenfield scale-ups, and coaches startups on industrial strategy and COGS.</p><span class="a-badge a-pd">Product Development</span></div><div class="gcard"><b>Alain Patchong, PhD</b><p>Industrial operations and production-system design at Stellantis, Goodyear and Forvia; robotics founder open to manufacturing mentoring.</p><span class="a-badge a-pd">Product Development</span></div><div class="gcard"><b>Martin Speiermann</b><p>25+ years in energy, now active in energy and space with ESA and European Commission projects; open to mentoring and investing, subject to conflict checks.</p><span class="a-badge a-pa">Partnerships</span></div><div class="gcard"><b>Louisa Yakoub</b><p>Investment banking and debt capital markets; raised $300M and $170M in complex one-to-one structured rounds.</p><span class="a-badge a-fs">Finance Structuration</span></div></div></section>
+
+<section class="sec alt" id="perks"><span class="s-tag">Suggested Perks</span><h2>Perks</h2><div class="note">⚠ The perks Excel was not included in this conversation, so no perks are recommended here rather than inventing them. When the file is shared, the shortlist should favour: (1) hardware/IoT and cloud credits for the BioPod fleet software and computer vision; (2) finance tooling for a first CFO (consolidation across the US topco and French opco, investor reporting); (3) US entity, legal, HR and payroll services for the NYC office; (4) AI/ML compute credits for the plant-recipe models; (5) data room / fundraising tooling for the Series A.</div></section>
+
+<section class="sec" id="dashboard"><span class="s-tag">Visual Dashboard</span><h2>Mentor Pool Analytics</h2>
+<p class="lead">All charts are drawn from the 71 matched mentors (top + qualified), plus the benchmark against prior Inovexus operations.</p>
+<div class="cgrid">
+<div class="ccard"><h3>1. Score Distribution</h3><p>DMF scores across the matched pool (N = 71)</p><div class="cw"><canvas id="c1"></canvas></div></div>
+<div class="ccard"><h3>2. Confidence Level Distribution</h3><p>How robust the evidence behind each match is (horizontal histogram)</p><div class="cw"><canvas id="c2"></canvas></div></div>
+<div class="ccard"><h3>3. Geographic Distribution</h3><p>Country of residence on file</p><div class="cw"><canvas id="c3"></canvas></div></div>
+<div class="ccard"><h3>4. Mentoring Area Distribution</h3><p>Primary area per mentor — top vs qualified</p><div class="cw"><canvas id="c4"></canvas></div></div>
+<div class="ccard"><h3>5. Sector Expertise Distribution</h3><p>Mentors per sector group (a mentor can span several)</p><div class="cw"><canvas id="c5"></canvas></div></div>
+<div class="ccard"><h3>6. Mentoring Skill Distribution</h3><p>Mentors per functional skill group</p><div class="cw"><canvas id="c6"></canvas></div></div>
+<div class="ccard full"><h3>7. Global Confidence — Benchmark vs Prior Inovexus Programs</h3><p>Interstellar Lab's normalized score (7.8) against historical operations, ranked high to low</p><div class="cw-t"><canvas id="c7"></canvas></div></div>
+</div></section>
+
+<section class="sec alt" id="method"><span class="s-tag">Methodology</span><h2>How Mentors Were Scored</h2><ul class="meth">
+<li><b>Coverage:</b> all 537 Affinity mentor records, joined to all 3,338 note rows and the 542 enriched profiles. Inovexus staff were excluded (2 records), leaving 535 mentors scored, 500 of them with notes.</li>
+<li><b>Layer 1 (notes, primary):</b> notes were cut at administrative markers for theme scoring; full untruncated notes were used for the space re-sweep. Nine theme lexicons (space, agri/CEA, cosmetics/fragrance/ingredients, biotech, hardware/industrialisation, finance, US, climate, enterprise B2B) built a 208-profile candidate pool, and every profile in that pool was read individually. The other 327 were swept for industrial, CFO, US and life-science signals, which added 10 more.</li>
+<li><b>Space re-sweep (v2):</b> all 537 records were re-scanned for 40+ space terms across every CSV column, every enriched-profile field and the full untruncated notes. This added Thomas Nathan (Airbus/NASA), Rui Duarte (microgravity-medicine stake), Marie Gepel (Thales data & AI) and Patrick Renault (aerospace working-capital finance). 'SpaceTech' ticked only as a self-declared Typeform interest (e.g. Fabio Lalli, Ivan Communod, Steve Vaile, Serge Borg, Peter Block) was not credited without supporting evidence.</li>
+<li><b>Layer 2 (CSV, secondary):</b> Manual industry ×0.45, Typeform industry ×0.15, manual skills ×0.25, Typeform skills ×0.10, geography ×0.03 and business model ×0.02 were used to validate, never to override, notes evidence.</li>
+<li><b>Contamination control:</b> a portfolio meeting about a maritime/satellite-imaging startup is attached to several mentors' notes (e.g. Gaurang Telang, Mark Dunning, Jacques-Alexandre Gerber). Those satellite mentions were not credited. The same applies to internal Inovexus meetings that mention Series A, L'Oréal or the US.</li>
+<li><b>Granola:</b> a broad multi-sector query (space, CEA/agtech, fragrance &amp; ingredients, plant biotech, hardware scale-up, CFO/deeptech fundraising) surfaced the Granola-only pipeline above.</li>
+<li><b>Anti-recycling:</b> the shortlist was built from Interstellar's specific bottlenecks. Generic B2B SaaS sales profiles that recur in recent reports were left out unless they had sector-specific evidence.</li></ul></section>
+<footer>Inovexus · Mentor Matching Report · Interstellar Lab · October 2026 · Confidential — for internal &amp; IC use only<br>535 profiles scored · 71 matches · Global confidence 78/100</footer>
+</div>
+<script>
+function go(id){document.getElementById(id).scrollIntoView({behavior:'smooth'})}
+const AREAS=["Enterprise Sales", "Partnerships", "Product Development", "Finance Structuration", "International Scaling"];
+document.querySelectorAll('.filters').forEach(f=>{const g=document.getElementById(f.dataset.grid);
+ ['All',...AREAS].forEach((a,i)=>{const b=document.createElement('button');b.className='fbtn'+(i?'':' on');b.textContent=a;
+  b.onclick=()=>{f.querySelectorAll('.fbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+   g.querySelectorAll('.m-card').forEach(c=>{c.style.display=(a==='All'||c.querySelector('.a-badge').textContent===a)?'':'none'})};f.appendChild(b)})});
+Chart.defaults.font.family="'Inter',sans-serif";Chart.defaults.color='#4f5f70';
+const grid={color:'rgba(0,0,0,.05)'};
+new Chart(c1,{type:'bar',data:{labels:["7.0\u20137.4", "7.5\u20137.9", "8.0\u20138.4", "8.5\u20138.9", "9.0\u20139.5"],datasets:[{data:[36, 14, 7, 8, 6],backgroundColor:['#b7d9c6','#8fc9a8','#5fae84','#2f6f8f','#0b1d33'],borderRadius:6}]},
+ options:{maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0},title:{display:true,text:'Mentors'},grid},x:{title:{display:true,text:'DMF score range'},grid:{display:false}}}}});
+new Chart(c2,{type:'bar',data:{labels:["5.5\u20135.9", "6.0\u20136.4", "6.5\u20136.9", "7.0\u20137.4", "7.5\u20137.9", "8.0\u20138.4", "8.5\u20139.0"],datasets:[{data:[7, 16, 17, 8, 11, 5, 7],backgroundColor:'#3f8f5f',borderRadius:6}]},
+ options:{indexAxis:'y',maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{precision:0},title:{display:true,text:'Mentors'},grid},y:{title:{display:true,text:'Confidence'},grid:{display:false}}}}});
+new Chart(c3,{type:'doughnut',data:{labels:["France", "United States", "Switzerland", "Belgium", "Netherlands", "Germany", "Italy", "United Kingdom", "Spain", "Luxembourg", "Denmark", "Hong Kong", "Portugal", "Sweden", "Singapore"],datasets:[{data:[27, 13, 6, 4, 4, 4, 3, 2, 2, 1, 1, 1, 1, 1, 1],backgroundColor:['#0b1d33','#3f8f5f','#2f6f8f','#b8862b','#7b5ea7','#c0584a','#8fc9a8','#5f86a6','#d9b26a','#a891c9','#e09a8f','#6b7c8c','#c9d5de','#1f4a6e','#9fd3b5'],borderColor:'#fff',borderWidth:2}]},
+ options:{maintainAspectRatio:false,cutout:'58%',plugins:{legend:{position:'right',labels:{boxWidth:12,font:{size:11}}}}}});
+new Chart(c4,{type:'bar',data:{labels:AREAS,datasets:[{label:'Top',data:[4, 5, 2, 3, 0],backgroundColor:'#0b1d33',borderRadius:4},{label:'Qualified',data:[12, 11, 11, 15, 8],backgroundColor:'#8fc9a8',borderRadius:4}]},
+ options:{indexAxis:'y',maintainAspectRatio:false,scales:{x:{stacked:true,beginAtZero:true,ticks:{precision:0},grid},y:{stacked:true,grid:{display:false}}},plugins:{legend:{position:'bottom'}}}});
+new Chart(c5,{type:'bar',data:{labels:["Hardware / Manufacturing", "Space / Aerospace", "Cosmetics / Fragrance / Ingredients", "Agri / Food / Plant Science", "Finance / VC", "Biotech / Pharma / Chemicals", "Climate / CleanTech"],datasets:[{data:[21, 14, 14, 14, 11, 11, 7],backgroundColor:'#2f6f8f',borderRadius:6}]},
+ options:{indexAxis:'y',maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{precision:0},grid},y:{grid:{display:false},ticks:{font:{size:11}}}}}});
+new Chart(c6,{type:'bar',data:{labels:["B2B / Enterprise Sales", "Strategy / Governance / Regulatory", "Fundraising / Investors", "Industrialisation / Operations", "Partnerships / M&A", "US / International Expansion", "CFO / Finance Function", "AI / Engineering / R&D", "Brand / Marketing"],datasets:[{data:[22, 20, 20, 19, 16, 15, 12, 10, 7],backgroundColor:'#7b5ea7',borderRadius:6}]},
+ options:{indexAxis:'y',maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{precision:0},grid},y:{grid:{display:false},ticks:{font:{size:11}}}}}});
+const BL=["Flumes", "Kinvault", "Owuba", "Sumbios", "Lili For Life", "Intelligent Core", "Tellis.ai", "Saveria", "Boon.ai", "Interstellar Lab", "Nerva", "Influeri", "Curvo", "Blumana", "Glober AI"],BV=[8.8, 8.5, 8.4, 8.3, 8.2, 8.2, 8.0, 7.8, 7.8, 7.8, 7.6, 7.6, 7.4, 7.0, 6.9],CUR='Interstellar Lab';
+new Chart(c7,{type:'bar',data:{labels:BL,datasets:[{data:BV,backgroundColor:BL.map(l=>l===CUR?'#3f8f5f':'rgba(148,163,184,.6)'),borderColor:BL.map(l=>l===CUR?'#22603e':'#94a3b8'),borderWidth:2,borderRadius:7}]},
+ options:{maintainAspectRatio:false,layout:{padding:{top:22}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'Score: '+c.raw.toFixed(1)+'/10'}}},
+ scales:{y:{min:6,max:10,title:{display:true,text:'Global confidence (0–10)'},ticks:{callback:v=>v.toFixed(1)},grid},x:{grid:{display:false},ticks:{font:c=>({weight:BL[c.index]===CUR?'700':'400'})}}}},
+ plugins:[{id:'vals',afterDatasetsDraw(ch){const x=ch.ctx;x.save();ch.getDatasetMeta(0).data.forEach((b,i)=>{const cur=BL[i]===CUR;x.fillStyle=cur?'#22603e':'#4f5f70';x.font=(cur?'bold 13px':'12px')+' Inter';x.textAlign='center';x.fillText(BV[i].toFixed(1),b.x,b.y-6)});x.restore()}}]});
+</script></body></html>
